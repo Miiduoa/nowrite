@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# PyInstaller build artifacts
+build/
+dist/
+*.spec
+
+# Generated handwriting output
+*.pdf
+handwritten_page_*.png
+_smoke*
+output/
+out/
+
+# Third-party fonts — supply your own locally; not redistributed here
+*.ttf
+*.otf
+
+# OS cruft
+.DS_Store
+Thumbs.db

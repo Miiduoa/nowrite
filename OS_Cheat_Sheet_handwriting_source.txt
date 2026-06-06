@@ -1,0 +1,247 @@
+OS Final Exam Cheat Sheet (Lectures 5-8)
+Threads 執行緒 · CPU Scheduling 排程 · Synchronization 同步 · Deadlock 死結
+
+==== L5 · Threads 執行緒 ====
+
+5.1 Thread vs Process 執行緒 vs 程序
+· Definition — Process: independent program in execution / Thread: lightweight unit within a process
+· Memory — Process: separate address space / Thread: shares code/data/files
+· Resources — Process: code,data,files,registers,stack / Thread: only thread ID, registers, stack, PC
+· Creation — Process: heavy (expensive) / Thread: light (cheap 快速)
+· Ctx switch — Process: slow / Thread: fast
+· Comm. — Process: IPC (pipes, sockets) / Thread: shared memory directly
+
+5.2 Multithreading Benefits 好處
+· Responsiveness 回應: UI responsive while bg work runs
+· Resource Sharing 共享: share code/data/files → less memory
+· Economy 經濟: cheaper than creating processes
+· Scalability 擴展: run on multiple cores in parallel
+· Challenges: divide tasks, balance load, data splitting/dependency, testing
+
+5.3 Threading Models 執行緒模型
+· User 使用者: user-level lib (Pthreads, Java, Win32). Kernel 核心: by OS kernel
+· Many-to-One 多對一 (many user→1 kernel): efficient; one block→ALL block, no parallelism. Green threads
+· One-to-One 一對一 (each user→1 kernel): more concurrency; thread=kernel thread (overhead). Windows, Linux
+· Many-to-Many 多對多 (many→≤ many): best flexibility, true parallelism; complex. Solaris
+
+5.4 Pthread API 函式庫 (POSIX thread lib for C/C++ on Unix/Linux)
+· pthread_create: create 建立 (&tid, attr, routine, arg)
+· pthread_join: wait to finish 等待; gets return value
+· pthread_detach: detach 分離; auto-free, can't join later
+· pthread_exit: terminate self 自行結束; return status
+· Flow: create() → worker runs → exit() → main join() collects
+
+5.5 Java & Linux Threads
+· Java: extend Thread OR implement Runnable; native OS threads (Win→Win32 1:1, Solaris→Pthreads M:M)
+· Linux: fork()=new process (copy); clone()=thread-like (shares memory)
+· clone flags — CLONE_FS: file-system info / CLONE_VM: memory space / CLONE_SIGHAND: signal handlers / CLONE_FILES: open files
+
+5.6 Threading Issues 議題
+· fork()&exec(): if exec() follows → dup only caller (efficient); exec() replaces process, all threads lost
+· Cancellation 取消: async=stop now (dangerous); deferred (default)=check at cancel points (safer)
+· Signal 信號: sync=self (div-by-0); async=external (Ctrl+C) → specific/broadcast/handler thread
+· Thread Pool 池: pre-create & reuse; faster, caps count. Size ← cores, load, memory
+· Thread-Specific: private data per thread (own copy)
+
+==== L6 · CPU Scheduling 排程 ====
+
+6.1 Concepts & Metrics 基本概念
+· CPU burst 爆發 / I/O burst (waiting I/O)
+· CPU-bound 密集: long CPU, few I/O. I/O-bound: short CPU, frequent I/O (interactive)
+· Transitions: 1 Running→Waiting (I/O) = non-preempt; 2 Running→Ready (interrupt) = preempt; 3 Waiting→Ready (I/O done) = preempt; 4 Terminates = non-preempt
+· Non-preempt 非搶佔: only 1 & 4. Preempt 搶佔: 1-4, need sync!
+· Metrics — Turnaround 完成 = Completion − Arrival (Min); Waiting 等待 = Turnaround − Burst (Min); Response 回應 = First Sched − Arrival (Min); Throughput 產出 = procs done / time (Max); Utilization = % CPU busy (Max)
+· Dispatcher latency = stop one + start another (keep min)
+
+6.2 FCFS 先來先服務
+· Non-preemptive; runs until done
+· Convoy Effect 護送: short jobs stuck behind long → long avg wait
+· Arrival order changes waiting times a lot
+
+6.3 SJF / SRTF 最短工作優先
+· SJF (non-preempt): shortest next burst, run to completion
+· SRTF (preempt) 最短剩餘: shorter arrival → preempt
+· OPTIMAL min avg waiting time; can't know burst → predict
+· τ(n+1) = α·t(n) + (1−α)·τ(n);  α≈0.5, t=last burst, τ=last predict
+
+6.4 Priority 優先權
+· Highest priority wins; preempt or non-preempt
+· SJF = priority where priority = burst
+· Starvation 飢餓: low-pri never run → Aging 老化 raises priority over time
+
+6.5 Round Robin (RR) 輪轉
+· Fixed TQ 時間量子 (10-100ms); after TQ → end of queue
+· TQ large → FCFS; TQ small → too many ctx switches
+· Time-sharing & fairness; better response, worse turnaround than SJF
+· Rule: 80% of bursts < TQ
+
+6.6 Multilevel Queue 多層佇列
+· Split into queues (system, interactive, batch, student); each own algorithm
+· Process stays in queue permanently (no move)
+· Between: fixed priority (starvation) OR time slice (80%fg / 20%bg)
+· Order: system > interactive > editing > batch > student. I/O-bound → higher
+
+6.7 MLFQ 多層回饋
+· Like MLQ but CAN MOVE between queues; Aging prevents starvation
+· Q0 high = 8ms (new jobs here); Q1 = 16ms (not done in Q0 → here); Q2 low = ∞ (runs when Q0,Q1 empty)
+· Config: #queues, algo/queue, promote 升級 / demote 降級
+
+6.8 Multi-Processor / Core
+· Multi-Processor 多處理器:
+  - Asymmetric 非對稱: 1 CPU does OS, others user code
+  - SMP 對稱: each CPU self-schedules; needs sync
+  - Affinity 親和性: stay same CPU → warm cache. Soft=prefer / Hard=forced
+  - NUMA: CPU+mem grouped; keep near local mem
+  - Load Balance: Push (busy→idle) / Pull (idle←busy). vs affinity!
+· Multi-Core 多核心:
+  - Memory stall 停滯: cache miss wastes cycles
+  - Hyper-threading: 2+ HW threads/core use stall time
+  - Coarse 粗 (switch on stall, flush) / Fine 細 (each cycle)
+  - 2 levels: OS→HW thread; core picks HW thread
+· Eval — Deterministic: fixed workload, not general; Queueing: math avg; Simulation: random/real data; Real impl.: accurate, expensive
+
+★ Scheduling Comparison 比較
+· FCFS — Pre: N, Starve: N — convoy effect
+· SJF — Pre: N, Starve: Y — optimal avg wait
+· SRTF — Pre: Y, Starve: Y — preemptive SJF
+· Priority — Pre: Both, Starve: Y — aging fixes starve
+· RR — Pre: Y, Starve: N — TQ critical
+· MLQ — Pre: Y, Starve: Y — fixed, no move
+· MLFQ — Pre: Y, Starve: N* — *aging; moves
+
+==== L7 · Synchronization 同步 ====
+
+7.1 Critical Section 臨界區
+· CS: code accessing shared data. Only ONE process in CS
+· do { entry-section() 進入區; CRITICAL SECTION 臨界區; exit-section() 離開區; remainder-section() 剩餘區 } while (TRUE);
+· Requirements: 1 Mutual Excl 互斥 (Pi in CS → no other in CS); 2 Progress 進展 (none in CS & some want → pick in finite time); 3 Bounded Wait 有限 (bounded entries before a waiter, no starve!)
+· Race condition 競爭: result depends on order (counter++ / -- interleave)
+
+7.2 Peterson (2 proc)
+· SW, 2 proc. Shared int turn; bool flag[2]
+· // Pi (i=0/1, j=1−i): do { flag[i]=TRUE (I want in); turn=j (let you first); while (flag[j] && turn==j) wait; CRITICAL SECTION; flag[i]=FALSE (done); remainder } while (TRUE)
+· ✓ME ✓Progress ✓Bounded
+· flag=想進去, turn=讓對方先; 都想進時 turn 決定誰先
+
+7.3 Bakery (n proc)
+· Ticket number; smallest first; tie → lower ID. (a,b)<(c,d) if a<c or (a=c & b<d)
+· do { choosing[i]=TRUE; num[i]=max(num[0..n-1])+1 (ticket); choosing[i]=FALSE; for (j=0; j<n; j++) { while (choosing[j]); while (num[j]!=0 && (num[j],j)<(num[i],i)) }; CRITICAL SECTION; num[i]=0 (release); remainder } while (1)
+· ✓ All 3. choosing[] stops simultaneous-pick conflicts
+
+7.4 Hardware 硬體支援
+· Disabling interrupts fails on multiprocessor → atomic instr
+· bool TestAndSet(bool &lock) { bool v=lock; lock=TRUE; return v; } // atomic 不可中斷
+· do { while (TestAndSet(lock)) spin; CS; lock=FALSE } while (1)
+· // Swap (shared bool lock=FALSE): do { key=TRUE; while (key==TRUE) Swap(lock,key); CS; lock=FALSE } while (1)
+· ✓ME ✓Progress ✗Bounded
+· 兩者都不滿足 Bounded Wait, process 可能一直 spin
+
+7.5 Semaphore 號誌
+· Integer via atomic wait()/signal(). Binary 二元 (0/1)=mutex. Counting 計數 (≥0)=#units
+· wait(S) { while (S<=0) busy-wait; S-- }   signal(S) { S++ }
+· Busy waiting wastes CPU (spinlock)
+· POSIX — sem_init(s,psh,val): init with value; sem_wait(s): decrement, block if 0 (P); sem_post(s): increment (V); sem_getvalue: get current value; sem_destroy(s): destroy
+· POSIX sem ∈ POSIX, NOT Pthread; works with/without threads
+
+7.6 Mutex & Condition Var.
+· pthread_mutex_init(&m,NULL) 初始化; pthread_mutex_lock(&m) 進入; Critical Section; pthread_mutex_unlock(&m) 離開; pthread_mutex_destroy(&m) 銷毀
+· CV ops — cond_wait(&cv,&m): release mutex, sleep, re-acquire; cond_signal(&cv): wake ONE; cond_broadcast: wake ALL
+· RULE: CV ops only while mutex LOCKED!
+· // Waiting: lock(&m); if (x!=0) cond_wait(c,m); unlock(&m); take_action()
+· // Signaling: lock(&m); x--; if (x==0) cond_signal(c); unlock(&m)
+· wait() 三步: ① 放鎖+睡  ② 被喚醒 (鎖被佔)  ③ 重拿鎖+繼續
+
+7.7 Producer-Consumer 生產消費
+· Shared: buffer[], counter, in, out
+· Incorrect (entry at very start): consumer first → deadlock!
+· Inefficient (CS wraps all): works but less concurrency
+· Efficient (CS wraps only counter++ / --): more overlap
+· 只把 counter 修改放臨界區, buffer 操作放外面 → 效率最好
+
+==== L8 · Deadlock 死結 ====
+
+8.1 Four Conditions 四條件 (all FOUR hold at once → all wait forever)
+· 1 Mutual Excl 互斥: ≥1 non-sharable resource
+· 2 Hold & Wait 持有等待: holds ≥1 AND waits more
+· 3 No Preempt 不可搶: released only voluntarily
+· 4 Circular 循環: P0→P1→…→Pn→P0
+
+8.2 RAG 資源配置圖
+· Pi→Rj = Request: Pi waits for Rj. Rj→Pi = Assignment: Rj held by Pi
+· Process=○, Resource=□ (dots=instances)
+· No cycle → no deadlock
+· Cycle + single inst → deadlock
+· Cycle + multi inst → maybe
+
+8.3 Prevention 預防 (break ≥1 of the 4 conditions)
+· Mutual Excl: sharable (read-only); not always possible
+· Hold & Wait: request all upfront / release before new → low util, starve
+· No Preempt: denied → release all, restart; only if state savable
+· Circular: total order, request increasing. Most practical!
+
+8.4 Avoidance (RAG) 避免
+· Safe: a safe sequence exists (each can finish)
+· Unsafe: no safe seq → potential (not guaranteed)
+· Unsafe ≠ Deadlock; Deadlock ⊂ Unsafe ⊂ All
+· RAG (single inst): Claim edge (Pi→Rj dashed) = future request, a priori. Request: claim→request; Release: assign→claim. Grant only if no cycle. Detect O(n^2)
+
+8.5 Banker's Algorithm 銀行家 (multi-instance, Dijkstra. Need = Max − Allocation)
+· Safety: 1 Work=Available, Finish[i]=false; 2 find i: Finish[i]=F & Need[i]≤Work (none→4); 3 Work+=Alloc[i], Finish[i]=T, →2; 4 all Finish=T → SAFE ✓ else UNSAFE ✗
+· Request[i]: 1 Request>Need → ERROR; 2 Request>Avail → WAIT; 3 pretend Avail−=R, Alloc+=R, Need−=R; 4 Safety? SAFE→grant; UNSAFE→rollback, WAIT
+
+★ Banker's Example 範例 (Total A10 B5 C7, Available (3,3,2))
+· P0 — Max 7 5 3, Alloc 0 1 0, Need 7 4 3
+· P1 — Max 3 2 2, Alloc 2 0 0, Need 1 2 2
+· P2 — Max 9 0 2, Alloc 3 0 2, Need 6 0 0
+· P3 — Max 2 2 2, Alloc 2 1 1, Need 0 1 1
+· P4 — Max 4 3 3, Alloc 0 0 2, Need 4 3 1
+· Work=(3,3,2); P1 (1,2,2)≤ ✓ →(5,3,2); P3 (0,1,1)≤ ✓ →(7,4,3); P4 (4,3,1)≤ ✓ →(7,4,5); P2 (6,0,0)≤ ✓ →(10,4,7); P0 (7,4,3)≤ ✓
+· seq <P1,P3,P4,P2,P0> ✓
+· P1 asks (1,0,2): ≤Need → safe → GRANT. P4 asks (3,3,0): → UNSAFE / DENY
+
+8.6 Detection 偵測
+· Single: Wait-for graph (drop resources). Deadlock <=> cycle
+· Multi: Banker-like w/ Alloc, Request (not Max!), Avail. Not "finish" → deadlocked
+· Total A7 B2 C6, Available (0,0,0)
+· P0 — Alloc 0 1 0, Request 0 0 0
+· P1 — Alloc 2 0 0, Request 2 0 2
+· P2 — Alloc 3 0 3, Request 0 0 0
+· P3 — Alloc 2 1 1, Request 1 0 0
+· P4 — Alloc 0 0 2, Request 0 0 2
+· <P0,P2,P3,P1,P4> all finish → no deadlock. If P2 asks (0,0,1) → P1-P4 deadlocked
+
+8.7 Recovery 恢復
+· Termination 終止: kill ALL, or 1-by-1. Victim ← priority, time, resources
+· Preemption 搶佔: take resources; rollback to saved state; avoid same victim (starve); safe order
+
+★ Deadlock Strategy 策略
+· Prevention 預防 — cost High — break 1 of 4
+· Avoidance 避免 — cost Med — max-need; RAG / Banker
+· Detect + Recover — cost Low — wait-for / matrix
+· Ignore 忽略 — cost None — most OSes (Win, Linux)
+
+★ Sync Tools 同步工具 (ME=Mutual Excl, Pr=Progress, BW=Bounded Wait)
+· Peterson — SW — ME ✓ Pr ✓ BW ✓ — 2 proc
+· Bakery — SW — ME ✓ Pr ✓ BW ✓ — n proc
+· TestAndSet — HW — ME ✓ Pr ✓ BW ✗ — Any
+· Swap — HW — ME ✓ Pr ✓ BW ✗ — Any
+· Semaphore — OS — ME ✓ Pr ✓ BW Dep — Any
+· Mutex — OS — ME ✓ Pr ✓ BW Dep — Any
+
+★ Key Formulas 公式速查
+· Turnaround = Completion − Arrival
+· Waiting = Turnaround − Burst
+· Response = First_CPU − Arrival
+· Need = Max − Allocation
+· τ(n+1) = α·t(n) + (1−α)·τ(n)
+· SJF optimal min avg wait
+· RR: TQ 太大→FCFS, 太小→太多 ctx switch
+· MLFQ 可移動 (MLQ 不行)
+· Aging 解 starvation (Priority / MLFQ)
+· Deadlock 需 4 條件同時成立
+· Unsafe ≠ Deadlock
+· cycle+single→一定; +multi→不一定
+· Banker: Need≤Work 就能執行並釋放
+· CV wait() 自動釋放 mutex, 喚醒後重拿鎖
+
+Good luck! 考試加油!
