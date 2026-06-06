@@ -1,0 +1,53 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build standalone EXE (PyInstaller)
+        run: >
+          pyinstaller --onefile --windowed --noconfirm --clean
+          --name OS_Handwriting_Generator
+          --collect-all handright
+          app.py
+
+      - name: Stage font + sample text next to the EXE
+        run: |
+          Copy-Item TekitouPoem.ttf dist/
+          Copy-Item OS_Cheat_Sheet_handwriting_source.txt dist/
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OS_Handwriting_Generator-windows
+          path: dist/*
+
+      - name: Publish GitHub Release (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            dist/OS_Handwriting_Generator.exe
+            dist/TekitouPoem.ttf
+            dist/OS_Cheat_Sheet_handwriting_source.txt

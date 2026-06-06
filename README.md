@@ -1,5 +1,7 @@
 # nowrite — 手寫小抄產生器 / Handwriting Cheat-Sheet Generator
 
+[![Build Windows EXE](https://github.com/Miiduoa/nowrite/actions/workflows/build-windows.yml/badge.svg)](https://github.com/Miiduoa/nowrite/actions/workflows/build-windows.yml)
+
 把任意 UTF-8 文字檔，用指定的 TTF 字體轉成**擬手寫 PDF**。內建圖形介面，可調 19 項參數
 （字體大小、行間距、各種筆畫擾動、墨汁深度、塗改…），支援空白／橫線／方格紙與黑／藍／灰墨色。
 
@@ -10,6 +12,19 @@ styles (blank / lined / grid) and three ink colours (black / blue / dark-gray).
 > 起源：把一份作業系統期末小抄（L5–L8）轉成手寫筆記。`OS_Cheat_Sheet_handwriting_source.txt` 是內建範例文字，換掉它就能手寫任何內容。
 
 ---
+
+## 🖼 Sample output / 範例輸出
+
+<p align="center">
+  <img src="docs/preview_page.png" width="45%" alt="handwritten page sample">
+  &nbsp;
+  <img src="docs/preview_closeup.png" width="45%" alt="handwriting close-up">
+</p>
+
+## ⬇️ Download (Windows)
+- **Releases** — 發佈 tag（例 `v1.0.0`）時，GitHub Actions 會在 Windows 上自動編譯，並把 `OS_Handwriting_Generator.exe` 附到 [Releases](https://github.com/Miiduoa/nowrite/releases)；下載後雙擊即可，**免裝 Python**。
+- **最新建置** — 也可到 [Actions](https://github.com/Miiduoa/nowrite/actions) 下載最新 build 的 artifact。
+- **自行編譯** — 見下方 Quick start，或執行 `build_exe.bat`。
 
 ## ✨ Features
 - **19 項參數**即時可調（見下表）
