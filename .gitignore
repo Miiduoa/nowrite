@@ -18,8 +18,10 @@ _smoke*
 output/
 out/
 
-# Third-party fonts — supply your own locally; not redistributed here
+# Fonts: this repo ships TekitouPoem.ttf (see README font note).
+# Any other fonts are ignored by default.
 *.ttf
+!TekitouPoem.ttf
 *.otf
 
 # OS cruft

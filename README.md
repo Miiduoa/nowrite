@@ -21,7 +21,7 @@ styles (blank / lined / grid) and three ink colours (black / blue / dark-gray).
 ## 🚀 Quick start
 
 ### Windows（最簡單，產生獨立 EXE）
-1. 放一個 `.ttf` 字體到專案根目錄（見下方「字體」）。
+1. 已內含 `TekitouPoem.ttf`；要換字體就替換它（見下方「字體」）。
 2. 雙擊 `build_exe.bat` → 自動安裝相依套件並編譯出 `dist\OS_Handwriting_Generator.exe`。
 3. 之後直接雙擊該 EXE 即可（免裝 Python）。
 
@@ -33,12 +33,13 @@ python render_core.py  # 無介面，用預設參數直接輸出 PDF
 ```
 
 ## 🖋 字體 / Font（重要）
-本專案**不附帶字體**。原始使用的 `TekitouPoem.ttf`（適当ポエム, © Cockatrice Digital）為第三方字體，
-內嵌授權序號、可能屬商用授權，故**未隨此 repo 散布**。請自行將你**擁有合法授權**的 `.ttf`
-放到專案根目錄（任何 TTF 皆可，檔名建議 `TekitouPoem.ttf`，或在程式中用「瀏覽」選擇）。
-`.gitignore` 已預設忽略 `*.ttf`。
+本專案內含 `TekitouPoem.ttf`（適当ポエム, © Cockatrice Digital）方便直接使用。**此為第三方字體**，
+內嵌授權序號、可能屬商用授權；是否可公開散布由 repo 擁有者自行負責。若你的用途需要不同授權，
+請改放你**擁有合法授權**的 `.ttf`（任何 TTF 皆可，檔名建議 `TekitouPoem.ttf`，或在程式中用「瀏覽」選擇）。
 
-This repo does **not** bundle any font. Drop your own licensed `.ttf` in the project root.
+This repo includes `TekitouPoem.ttf` (© Cockatrice Digital) for convenience. It is a **third-party font**
+that may be commercially licensed — public redistribution is the repo owner's responsibility. Replace it
+with your own licensed `.ttf` if needed.
 
 ## ⚙️ Parameters
 
@@ -73,5 +74,5 @@ README_使用說明.txt  詳細中文說明
 ```
 
 ## 📄 License
-程式碼採 **MIT**（見 `LICENSE`）。**字體不在此授權範圍**，亦未隨本 repo 散布。
+程式碼採 **MIT**（見 `LICENSE`）。**字體不在此 MIT 授權範圍**，為第三方作品、依其自身授權。
 Engine: [Handright](https://github.com/Gsllchb/Handright) (handwriting simulation).
