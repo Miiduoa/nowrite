@@ -1,0 +1,22 @@
+# 離線桌面版後端相依（放寬版本，確保在 Python 3.12 上一律使用預編譯 wheel，不從原始碼編譯）
+# 由 build-dmg.command 在 Python 3.12 的虛擬環境中安裝。
+fastapi
+uvicorn[standard]
+python-multipart
+slowapi
+handrightbeta==8.7.0
+Pillow
+opencv-python
+numpy
+scikit-learn
+PyMuPDF
+PyPDF2==3.0.1
+pypandoc==1.12
+python-docx
+python-dotenv
+jinja2
+sentry-sdk
+schedule
+psutil
+Werkzeug
+pyinstaller==6.10.0

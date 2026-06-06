@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="手寫文字生成網站，支援多種字型和背景，線上生成高質量手寫文字圖片與 PDF。適合作業、論文、信件等場景，支援自定義字型、背景與參數調節，輕鬆生成個性化手寫效果。">
+    <meta name="keywords" content="手寫文字,線上生成,圖片工具,handwrite,文字生成,圖片生成,手寫作業,論文手寫,PDF匯出,自定義字型,背景圖片,AI手寫,手寫模擬,手寫作業,手寫論文,手寫信件,手寫圖片">
+    <meta name="author" content="handwrite.14790897.xyz">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://handwrite.sixiangjia.de/">
+    <meta property="og:title" content="手寫文字生成網站 - 線上生成手寫圖片與 PDF">
+    <meta property="og:description" content="支援多種字型和背景，線上生成高質量手寫文字圖片與 PDF，適合作業、論文、信件等場景。">
+    <meta property="og:image" content="/default1.webp">
+    <meta property="og:locale" content="zh_CN">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://handwrite.sixiangjia.de/">
+    <meta property="twitter:title" content="手寫文字生成網站 - 線上生成手寫圖片與 PDF">
+    <meta property="twitter:description" content="支援多種字型和背景，線上生成高質量手寫文字圖片與 PDF，適合作業、論文、信件等場景。">
+    <meta property="twitter:image" content="/default1.webp">
+
+    <!-- 結構化資料 JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "手寫文字生成網站",
+      "url": "https://handwrite.sixiangjia.de/",
+      "description": "支援多種字型和背景，線上生成高質量手寫文字圖片與 PDF，適合作業、論文、信件等場景。",
+      "image": "https://handwrite.sixiangjia.de/default1.webp",
+      "inLanguage": "zh-CN",
+      "publisher": {
+        "@type": "Organization",
+        "name": "handwrite.14790897.xyz"
+      }
+    }
+    </script>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- 網站地圖 -->
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="<%= BASE_URL %>favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="<%= BASE_URL %>icon.svg">
+    <link rel="shortcut icon" href="<%= BASE_URL %>icon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="<%= BASE_URL %>favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="<%= BASE_URL %>favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="<%= BASE_URL %>favicon-96x96.png">
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="<%= BASE_URL %>apple-touch-icon.png">
+
+    <!-- Android Chrome Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="<%= BASE_URL %>web-app-manifest-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="<%= BASE_URL %>web-app-manifest-512x512.png">
+
+    <!-- <title><%= htmlWebpackPlugin.options.title %></title> -->
+    <title>手寫文字生成網站 - 線上生成手寫圖片與 PDF | handwrite.14790897.xyz</title>
+
+    <!-- 主題初始化：防止重新整理時明暗閃爍（在樣式載入前先確定主題與背景底色） -->
+    <script>
+      (function () {
+        try {
+          var pref = localStorage.getItem("hw-theme") || "auto";
+          var root = document.documentElement;
+          root.setAttribute("data-theme", pref);
+          var dark =
+            pref === "dark" ||
+            (pref === "auto" &&
+              window.matchMedia &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          root.style.background = dark ? "#16181d" : "#f4f5f7";
+          root.style.colorScheme = dark ? "dark" : "light";
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+
+    <!-- Service Worker Registration -->
+    <!-- <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script> -->
+  </body>
+  </html>

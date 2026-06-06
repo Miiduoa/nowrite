@@ -1,0 +1,67 @@
+appId: xyz.handwrite.desktop
+productName: 手寫生成
+copyright: © handwrite
+
+# 建置後對 App 與內嵌後端做 ad-hoc 簽章（Apple Silicon 本機執行所需）
+afterPack: ./afterPack.js
+
+directories:
+  output: release
+  buildResources: build
+
+# Electron 主程序相關檔案（前端與後端走 extraResources）
+files:
+  - main.cjs
+  - preload.cjs
+  - package.json
+
+# 額外打包進 App 的資源：
+#   ../frontend/dist  -> Resources/app_dist  （前端建置產物，桌面模式 publicPath './'）
+#   ../ttf_files      -> Resources/fonts     （內建字型，離線可用）
+#   dist-backend      -> Resources/backend   （PyInstaller 後端單一執行檔）
+extraResources:
+  - from: ../frontend/dist
+    to: app_dist
+    filter: ["**/*"]
+  - from: ../ttf_files
+    to: fonts
+    filter: ["**/*"]
+  - from: dist-backend
+    to: backend
+    filter: ["**/*"]
+
+mac:
+  category: public.app-category.productivity
+  icon: build/icon.png
+  target:
+    - dmg
+  # 個人離線使用：不簽章（首次開啟請見 DESKTOP_BUILD.md 的 Gatekeeper 說明）
+  identity: null
+  # 後端 sidecar 需要對外連線本機埠 + 子程序執行
+  hardenedRuntime: false
+  gatekeeperAssess: false
+
+dmg:
+  title: 手寫生成 ${version}
+  artifactName: 手寫生成-${version}-${arch}.dmg
+  contents:
+    - x: 130
+      y: 220
+      type: file
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+
+win:
+  icon: build/icon.png
+  target:
+    - nsis
+  artifactName: 手寫生成-${version}-setup.${ext}
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  shortcutName: 手寫生成
+  # 未簽章：首次執行 Windows SmartScreen 會提示，點「其他資訊 → 仍要執行」

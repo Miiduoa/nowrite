@@ -1,0 +1,544 @@
+/* ============================================================
+   手寫生成 · 液態玻璃設計系統（簡約科技 · 白底 Tesla 風）
+   純淨白／冷灰中性 · 克制的特斯拉紅 · 幾何無襯線 · 自動明暗
+   於 main.js 在 bootstrap 之後引入
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+/* ============================================================
+   設計令牌（淺色 = 預設）
+   ============================================================ */
+:root {
+  /* 排版：幾何無襯線（拉丁用 Inter，中文用蘋方／思源黑體，無書法） */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang TC", "PingFang SC", "Noto Sans TC", "Noto Sans SC",
+    "Microsoft JhengHei", Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: var(--font-sans);
+
+  /* 圓角 */
+  --r-xl: 26px;
+  --r-lg: 20px;
+  --r-md: 14px;
+  --r-sm: 10px;
+  --r-pill: 999px;
+
+  /* 中性墨 / 白 色板（Tesla 風） */
+  --ink: #171a20;
+  --ink-soft: #5c5e62;
+  --ink-faint: #9a9da3;
+  --paper: #ffffff;
+
+  /* 強調色：特斯拉紅（極克制使用） */
+  --accent: #e82127;
+  --accent-2: #c1121a;
+  --accent-soft: rgba(232, 33, 39, 0.10);
+  --accent-ring: rgba(232, 33, 39, 0.30);
+
+  /* 主按鈕：深墨填充（深色模式自動反相為白填充） */
+  --btn-primary-bg: #171a20;
+  --btn-primary-fg: #ffffff;
+  --btn-primary-shadow: 0 8px 20px rgba(23, 26, 32, 0.18);
+
+  /* 玻璃材質（純淨白） */
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-bg-strong: rgba(255, 255, 255, 0.82);
+  --glass-edge: rgba(23, 26, 32, 0.08);
+  --glass-hi: rgba(255, 255, 255, 0.9);
+  --glass-blur: 20px;
+  --glass-shadow: 0 12px 34px rgba(23, 26, 32, 0.10), 0 2px 8px rgba(23, 26, 32, 0.05);
+
+  /* 表單字段 */
+  --field-bg: rgba(255, 255, 255, 0.70);
+  --field-edge: rgba(23, 26, 32, 0.12);
+  --field-fg: var(--ink);
+
+  /* 背景（極簡冷白，僅極淡冷光供玻璃折射） */
+  --bg-base: #f4f5f7;
+  --blob-1: rgba(255, 255, 255, 0.90);
+  --blob-2: rgba(213, 224, 240, 0.55);
+  --blob-3: rgba(228, 230, 234, 0.60);
+  --blob-4: rgba(232, 33, 39, 0.05);
+  --grain: 0;
+
+  color-scheme: light;
+}
+
+/* ============================================================
+   深色覆蓋：Tesla App 炭黑（自動 + 手動）
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #f4f5f7;
+    --ink-soft: #a8abb2;
+    --ink-faint: #7f8389;
+    --paper: #1c1f25;
+
+    --accent: #ff4b51;
+    --accent-2: #ff6b70;
+    --accent-soft: rgba(255, 75, 81, 0.16);
+    --accent-ring: rgba(255, 75, 81, 0.40);
+
+    --btn-primary-bg: #f4f5f7;
+    --btn-primary-fg: #171a20;
+    --btn-primary-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+
+    --glass-bg: rgba(36, 39, 45, 0.55);
+    --glass-bg-strong: rgba(40, 43, 49, 0.72);
+    --glass-edge: rgba(255, 255, 255, 0.10);
+    --glass-hi: rgba(255, 255, 255, 0.08);
+    --glass-blur: 22px;
+    --glass-shadow: 0 18px 46px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.4);
+
+    --field-bg: rgba(255, 255, 255, 0.06);
+    --field-edge: rgba(255, 255, 255, 0.14);
+
+    --bg-base: #16181d;
+    --blob-1: rgba(60, 72, 96, 0.40);
+    --blob-2: rgba(40, 46, 58, 0.50);
+    --blob-3: rgba(70, 74, 82, 0.35);
+    --blob-4: rgba(255, 75, 81, 0.10);
+    --grain: 0;
+
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --ink: #f4f5f7;
+  --ink-soft: #a8abb2;
+  --ink-faint: #7f8389;
+  --paper: #1c1f25;
+
+  --accent: #ff4b51;
+  --accent-2: #ff6b70;
+  --accent-soft: rgba(255, 75, 81, 0.16);
+  --accent-ring: rgba(255, 75, 81, 0.40);
+
+  --btn-primary-bg: #f4f5f7;
+  --btn-primary-fg: #171a20;
+  --btn-primary-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+
+  --glass-bg: rgba(36, 39, 45, 0.55);
+  --glass-bg-strong: rgba(40, 43, 49, 0.72);
+  --glass-edge: rgba(255, 255, 255, 0.10);
+  --glass-hi: rgba(255, 255, 255, 0.08);
+  --glass-blur: 22px;
+  --glass-shadow: 0 18px 46px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.4);
+
+  --field-bg: rgba(255, 255, 255, 0.06);
+  --field-edge: rgba(255, 255, 255, 0.14);
+
+  --bg-base: #16181d;
+  --blob-1: rgba(60, 72, 96, 0.40);
+  --blob-2: rgba(40, 46, 58, 0.50);
+  --blob-3: rgba(70, 74, 82, 0.35);
+  --blob-4: rgba(255, 75, 81, 0.10);
+  --grain: 0;
+
+  color-scheme: dark;
+}
+
+/* ============================================================
+   基礎重置
+   ============================================================ */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: var(--bg-base);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
+  transition: background-color 0.5s ease, color 0.4s ease;
+}
+
+#app {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  text-align: left;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+a:hover {
+  color: var(--accent-2);
+}
+
+/* 細滾動條 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-faint) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--ink-faint) 50%, transparent);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-faint);
+  background-clip: padding-box;
+}
+
+/* ============================================================
+   玻璃材質工具類
+   ============================================================ */
+.glass {
+  position: relative;
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--r-lg);
+  box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-hi);
+}
+/* 液態頂部高光 */
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0) 36%
+  );
+  opacity: 0.9;
+}
+:root[data-theme="dark"] .glass::before {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0) 40%
+  );
+}
+
+.glass-strong {
+  background: var(--glass-bg-strong);
+}
+
+/* ============================================================
+   按鈕系統
+   ============================================================ */
+.btn-ink,
+.btn-glass,
+.btn-ghost {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.94rem;
+  letter-spacing: 0;
+  border-radius: var(--r-pill);
+  padding: 0.62em 1.3em;
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  line-height: 1.1;
+  transition: transform 0.16s ease, box-shadow 0.2s ease, background 0.2s ease,
+    opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* 主按鈕：深墨填充（深色模式自動反相） */
+.btn-ink {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  box-shadow: var(--btn-primary-shadow);
+}
+.btn-ink:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+.btn-ink:active {
+  transform: translateY(0) scale(0.985);
+}
+
+/* 玻璃按鈕：次要操作 */
+.btn-glass {
+  background: var(--glass-bg-strong);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  backdrop-filter: blur(12px) saturate(150%);
+  border-color: var(--glass-edge);
+  color: var(--ink);
+  box-shadow: 0 4px 14px rgba(23, 26, 32, 0.07), inset 0 1px 0 var(--glass-hi);
+}
+.btn-glass:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent-ring);
+}
+.btn-glass:active {
+  transform: translateY(0) scale(0.985);
+}
+
+/* 幽靈按鈕 */
+.btn-ghost {
+  background: transparent;
+  color: var(--ink-soft);
+  border-color: transparent;
+}
+.btn-ghost:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.btn-ink:disabled,
+.btn-glass:disabled,
+.btn-ghost:disabled,
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none;
+}
+
+.link-accent {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ============================================================
+   表單字段（統一玻璃內嵌風格）
+   ============================================================ */
+.field-input,
+input.glass-field,
+textarea.glass-field,
+select.glass-field {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--field-fg);
+  background: var(--field-bg);
+  border: 1px solid var(--field-edge);
+  border-radius: var(--r-sm);
+  padding: 0.6em 0.8em;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.field-input:hover,
+.glass-field:hover {
+  border-color: var(--accent-ring);
+}
+.field-input:focus,
+.glass-field:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+  background: var(--glass-bg-strong);
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--ink-faint);
+}
+
+/* ============================================================
+   Bootstrap 覆蓋
+   ============================================================ */
+.btn {
+  border-radius: var(--r-pill) !important;
+  font-weight: 600;
+  transition: transform 0.16s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.btn-primary {
+  background: var(--btn-primary-bg) !important;
+  color: var(--btn-primary-fg) !important;
+  border: none !important;
+  box-shadow: var(--btn-primary-shadow) !important;
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+.btn-info {
+  background: var(--accent) !important;
+  color: #fff !important;
+  border: none !important;
+}
+.btn-info:hover {
+  background: var(--accent-2) !important;
+  transform: translateY(-1px);
+}
+.btn-outline-primary {
+  background: var(--glass-bg-strong) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--glass-edge) !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.btn-outline-primary:hover:not(:disabled) {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  background: var(--glass-bg-strong) !important;
+}
+.btn-outline-info {
+  color: var(--accent) !important;
+  border-color: var(--accent-ring) !important;
+  background: transparent !important;
+}
+
+.card {
+  background: var(--glass-bg) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid var(--glass-edge) !important;
+  border-radius: var(--r-lg) !important;
+  box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-hi) !important;
+  color: var(--ink);
+}
+
+.form-control {
+  background: var(--field-bg) !important;
+  border: 1px solid var(--field-edge) !important;
+  border-radius: var(--r-sm) !important;
+  color: var(--ink) !important;
+  box-shadow: none !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.form-control:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 4px var(--accent-soft) !important;
+  background: var(--glass-bg-strong) !important;
+}
+.form-control::placeholder {
+  color: var(--ink-faint) !important;
+}
+.form-group label,
+label {
+  color: var(--ink-soft);
+}
+
+.bg-white,
+.bg-light {
+  background: transparent !important;
+}
+.text-black {
+  color: var(--ink-soft) !important;
+}
+.text-primary {
+  color: var(--accent) !important;
+}
+.text-info {
+  color: var(--accent) !important;
+}
+
+/* Alert -> 玻璃提示條 */
+.alert {
+  border-radius: var(--r-md) !important;
+  border: 1px solid var(--glass-edge) !important;
+  background: var(--glass-bg-strong) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  backdrop-filter: blur(14px) saturate(150%);
+  color: var(--ink) !important;
+  box-shadow: var(--glass-shadow);
+}
+.alert-warning {
+  border-left: 3px solid var(--accent) !important;
+}
+.alert-success {
+  border-left: 3px solid #2eaf6b !important;
+}
+.alert-danger {
+  border-left: 3px solid var(--accent) !important;
+}
+.alert-info {
+  border-left: 3px solid var(--ink-faint) !important;
+}
+
+/* ============================================================
+   SweetAlert2 玻璃化
+   ============================================================ */
+.swal2-popup {
+  border-radius: var(--r-lg) !important;
+  background: var(--glass-bg-strong) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(160%);
+  border: 1px solid var(--glass-edge) !important;
+  box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-hi) !important;
+  color: var(--ink) !important;
+}
+.swal2-title,
+.swal2-html-container {
+  color: var(--ink) !important;
+}
+.swal2-toast {
+  border-radius: var(--r-md) !important;
+}
+
+/* ============================================================
+   通用排版小工具
+   ============================================================ */
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+}
+.muted {
+  color: var(--ink-soft);
+}
+.faint {
+  color: var(--ink-faint);
+}
+
+/* 通用載入指示 */
+.spin {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--field-edge);
+  border-top-color: var(--accent);
+  display: inline-block;
+  vertical-align: middle;
+  animation: hwspin 0.8s linear infinite;
+}
+@keyframes hwspin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.inline-loader {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+/* 減少動畫偏好 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

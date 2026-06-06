@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="auto">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>手寫生成 · 簡約科技重設計預覽</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+:root{
+  --font-sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Noto Sans TC","Microsoft JhengHei",Roboto,Helvetica,Arial,sans-serif;
+  --r-xl:26px;--r-lg:20px;--r-md:14px;--r-sm:10px;--r-pill:999px;
+  --ink:#171a20;--ink-soft:#5c5e62;--ink-faint:#9a9da3;
+  --accent:#e82127;--accent-2:#c1121a;--accent-soft:rgba(232,33,39,.10);--accent-ring:rgba(232,33,39,.30);
+  --btn-primary-bg:#171a20;--btn-primary-fg:#fff;--btn-primary-shadow:0 8px 20px rgba(23,26,32,.18);
+  --glass-bg:rgba(255,255,255,.62);--glass-bg-strong:rgba(255,255,255,.82);--glass-edge:rgba(23,26,32,.08);--glass-hi:rgba(255,255,255,.9);--glass-blur:20px;
+  --glass-shadow:0 12px 34px rgba(23,26,32,.10),0 2px 8px rgba(23,26,32,.05);
+  --field-bg:rgba(255,255,255,.70);--field-edge:rgba(23,26,32,.12);
+  --bg-base:#f4f5f7;--blob-1:rgba(255,255,255,.9);--blob-2:rgba(213,224,240,.55);--blob-3:rgba(228,230,234,.6);--blob-4:rgba(232,33,39,.05);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ink:#f4f5f7;--ink-soft:#a8abb2;--ink-faint:#7f8389;
+  --accent:#ff4b51;--accent-2:#ff6b70;--accent-soft:rgba(255,75,81,.16);--accent-ring:rgba(255,75,81,.40);
+  --btn-primary-bg:#f4f5f7;--btn-primary-fg:#171a20;--btn-primary-shadow:0 10px 26px rgba(0,0,0,.5);
+  --glass-bg:rgba(36,39,45,.55);--glass-bg-strong:rgba(40,43,49,.72);--glass-edge:rgba(255,255,255,.10);--glass-hi:rgba(255,255,255,.08);--glass-blur:22px;
+  --glass-shadow:0 18px 46px rgba(0,0,0,.55),0 2px 10px rgba(0,0,0,.4);
+  --field-bg:rgba(255,255,255,.06);--field-edge:rgba(255,255,255,.14);
+  --bg-base:#16181d;--blob-1:rgba(60,72,96,.40);--blob-2:rgba(40,46,58,.5);--blob-3:rgba(70,74,82,.35);--blob-4:rgba(255,75,81,.10);
+  color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --ink:#f4f5f7;--ink-soft:#a8abb2;--ink-faint:#7f8389;
+  --accent:#ff4b51;--accent-2:#ff6b70;--accent-soft:rgba(255,75,81,.16);--accent-ring:rgba(255,75,81,.40);
+  --btn-primary-bg:#f4f5f7;--btn-primary-fg:#171a20;--btn-primary-shadow:0 10px 26px rgba(0,0,0,.5);
+  --glass-bg:rgba(36,39,45,.55);--glass-bg-strong:rgba(40,43,49,.72);--glass-edge:rgba(255,255,255,.10);--glass-hi:rgba(255,255,255,.08);--glass-blur:22px;
+  --glass-shadow:0 18px 46px rgba(0,0,0,.55),0 2px 10px rgba(0,0,0,.4);
+  --field-bg:rgba(255,255,255,.06);--field-edge:rgba(255,255,255,.14);
+  --bg-base:#16181d;--blob-1:rgba(60,72,96,.40);--blob-2:rgba(40,46,58,.5);--blob-3:rgba(70,74,82,.35);--blob-4:rgba(255,75,81,.10);
+  color-scheme:dark;}
+
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg-base);color:var(--ink);font-family:var(--font-sans);letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;transition:background-color .5s ease,color .4s ease}
+a{color:var(--accent);text-decoration:none}
+
+.app-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;background:var(--bg-base)}
+.blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.85}
+.b1{width:46vw;height:46vw;left:-8vw;top:-12vh;background:var(--blob-1);animation:d1 28s ease-in-out infinite alternate}
+.b2{width:38vw;height:38vw;right:-8vw;top:6vh;background:var(--blob-2);animation:d2 32s ease-in-out infinite alternate}
+.b3{width:42vw;height:42vw;left:16vw;bottom:-18vh;background:var(--blob-3);animation:d3 36s ease-in-out infinite alternate}
+.b4{width:26vw;height:26vw;right:10vw;bottom:-8vh;background:var(--blob-4);animation:d1 40s ease-in-out infinite alternate-reverse}
+@keyframes d1{to{transform:translate(5vw,4vh) scale(1.1)}}
+@keyframes d2{to{transform:translate(-6vw,5vh) scale(.95)}}
+@keyframes d3{to{transform:translate(4vw,-5vh) scale(1.08)}}
+
+.glass{position:relative;background:var(--glass-bg);-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(150%);backdrop-filter:blur(var(--glass-blur)) saturate(150%);border:1px solid var(--glass-edge);border-radius:var(--r-lg);box-shadow:var(--glass-shadow),inset 0 1px 0 var(--glass-hi)}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.25),rgba(255,255,255,0) 36%)}
+[data-theme="dark"] .glass::before{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,0) 40%)}
+.glass-strong{background:var(--glass-bg-strong)}
+
+.eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);display:inline-flex;gap:.45em}
+.muted{color:var(--ink-soft)} .faint{color:var(--ink-faint)}
+
+.btn-ink,.btn-glass{font-family:var(--font-sans);font-weight:600;font-size:.92rem;border-radius:var(--r-pill);padding:.62em 1.3em;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.5em;transition:transform .16s ease,box-shadow .2s,background .2s,opacity .2s}
+.btn-ink{background:var(--btn-primary-bg);color:var(--btn-primary-fg);box-shadow:var(--btn-primary-shadow)}
+.btn-ink:hover{transform:translateY(-1px);opacity:.92}
+.btn-glass{background:var(--glass-bg-strong);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-color:var(--glass-edge);color:var(--ink);box-shadow:0 4px 14px rgba(23,26,32,.07),inset 0 1px 0 var(--glass-hi)}
+.btn-glass:hover{transform:translateY(-1px);border-color:var(--accent-ring)}
+
+.glass-field{width:100%;font-family:var(--font-sans);font-size:.95rem;color:var(--ink);background:var(--field-bg);border:1px solid var(--field-edge);border-radius:var(--r-sm);padding:.6em .8em;transition:border-color .2s,box-shadow .2s,background .2s;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.glass-field:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft);background:var(--glass-bg-strong)}
+::placeholder{color:var(--ink-faint)}
+
+.hdr{position:fixed;top:14px;left:50%;transform:translateX(-50%);width:min(1180px,calc(100% - 28px));z-index:1200;display:flex;align-items:center;gap:14px;padding:9px 14px;border-radius:var(--r-pill)}
+.brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+.brand-mark{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--glass-bg-strong);border:1px solid var(--glass-edge);box-shadow:inset 0 1px 0 var(--glass-hi);font-size:18px}
+.brand-cn{font-weight:600;font-size:1.06rem;letter-spacing:1px}
+.brand-en{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint)}
+.nav{display:flex;gap:4px;margin:0 auto}
+.nav a{padding:7px 14px;border-radius:var(--r-pill);color:var(--ink-soft);font-weight:600;font-size:.92rem}
+.nav a.active{color:var(--accent)} .nav a.active::after{content:"";display:block;width:16px;height:3px;border-radius:3px;background:var(--accent);margin:2px auto 0}
+.nav a:hover{color:var(--ink);background:var(--accent-soft)}
+.controls{display:flex;align-items:center;gap:10px}
+.seg{display:inline-flex;padding:3px;border-radius:var(--r-pill);background:var(--field-bg);border:1px solid var(--field-edge)}
+.seg button{border:none;background:transparent;color:var(--ink-soft);font-weight:700;font-size:.8rem;padding:5px 10px;border-radius:var(--r-pill);cursor:pointer}
+.seg button.active{background:var(--btn-primary-bg);color:var(--btn-primary-fg)}
+.theme-btn{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--field-edge);background:var(--field-bg);color:var(--ink);cursor:pointer;font-size:17px;transition:transform .2s,color .2s}
+.theme-btn:hover{transform:rotate(-12deg);color:var(--accent)}
+
+main{max-width:1180px;margin:0 auto;padding:96px 22px 60px}
+.hero{text-align:center;max-width:720px;margin:4px auto 26px}
+.hero .eyebrow{justify-content:center;margin-bottom:10px}
+.hero h1{font-weight:600;font-size:clamp(1.9rem,4.6vw,3rem);line-height:1.12;letter-spacing:-.02em;margin:0 0 10px}
+.hero h1 .accent{color:var(--accent)}
+.hero p{color:var(--ink-soft);font-size:1.02rem;margin:0}
+
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:22px;align-items:start}
+.col-controls{display:flex;flex-direction:column;gap:18px;min-width:0}
+.col-preview{position:sticky;top:92px}
+.panel{padding:22px}
+.panel-head{margin-bottom:16px}
+.panel-title{font-weight:600;font-size:1.2rem;letter-spacing:-.01em;margin:6px 0 0}
+.field-label{display:block;font-size:.86rem;font-weight:600;color:var(--ink-soft);margin-bottom:7px}
+.picker{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.select-font{flex:1 1 140px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+.ifield{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ifield-label{font-size:.8rem;font-weight:600;color:var(--ink-soft)}
+.toggles{display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:16px}
+.switch{display:inline-flex;align-items:center;gap:10px;cursor:pointer}
+.switch input{position:absolute;opacity:0}
+.track{position:relative;width:44px;height:26px;border-radius:999px;background:var(--field-bg);border:1px solid var(--field-edge);transition:.25s}
+.thumb{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3);transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+.switch input:checked+.track{background:var(--accent);border-color:var(--accent)}
+.switch input:checked+.track .thumb{transform:translateX(18px)}
+.switch span.t{font-size:.9rem;font-weight:500}
+.expand-btn{margin-top:16px;display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:var(--r-pill);background:var(--field-bg);border:1px solid var(--field-edge);color:var(--ink-soft);font-weight:600;font-size:.88rem;cursor:pointer}
+.action-panel{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.row.sec .btn-glass{flex:1 1 auto;font-size:.86rem}
+.row.pri .btn-ink{flex:1 1 auto}
+.feedback-link{align-self:center;color:var(--ink-soft);font-weight:600;font-size:.9rem}
+
+.preview-frame{display:flex;justify-content:center;padding:14px;border-radius:var(--r-md);background:var(--field-bg);border:1px solid var(--field-edge)}
+.preview-frame svg{max-width:100%;height:auto;border-radius:10px;box-shadow:0 10px 30px rgba(23,26,32,.14);background:#fff}
+.pager{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:14px}
+.pager-info{font-size:.88rem;font-weight:600;color:var(--ink-soft)}
+
+footer{margin-top:30px;text-align:center;padding:18px}
+.freeprompt{font-size:.8rem;color:var(--ink-faint);margin-top:8px}
+
+@media (max-width:920px){.layout{grid-template-columns:1fr}.col-preview{position:static;order:-1}}
+.tag{position:fixed;left:16px;bottom:14px;z-index:20;font-size:.72rem;color:var(--ink-faint);background:var(--glass-bg-strong);border:1px solid var(--glass-edge);padding:6px 12px;border-radius:999px;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+</style>
+</head>
+<body>
+<div class="app-bg"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="blob b4"></span></div>
+
+<header class="hdr glass glass-strong">
+  <div class="brand"><span class="brand-mark">✍️</span><span><div class="brand-cn">手寫生成</div><div class="brand-en">Handwriting</div></span></div>
+  <nav class="nav"><a class="active">首頁</a><a>介紹</a><a>意見回饋</a></nav>
+  <div class="controls">
+    <div class="seg"><button class="active" onclick="lang(this,'tw')">繁</button><button onclick="lang(this,'cn')">简</button><button onclick="lang(this,'en')">EN</button></div>
+    <button class="theme-btn" id="tbtn" title="主題：自動" onclick="cycle()">◐</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <span class="eyebrow">手寫文字生成</span>
+    <h1>把文字，變成<span class="accent">手寫</span></h1>
+    <p>上傳字型與背景，調好版面，一鍵生成手寫圖片或 PDF。</p>
+  </section>
+
+  <div class="layout">
+    <div class="col-controls">
+      <section class="panel glass">
+        <div class="panel-head"><span class="eyebrow">01 · 內容</span><h2 class="panel-title">輸入內容</h2></div>
+        <label class="field-label">文字</label>
+        <textarea class="glass-field" rows="4" placeholder="請輸入要轉換的文字">面朝大海，春暖花開。從明天起，做一個幸福的人，餵馬、劈柴，周遊世界。</textarea>
+        <div style="height:12px"></div>
+        <label class="field-label">或上傳一個文件檔案</label>
+        <div class="picker"><button class="btn-glass">選擇檔案</button><span class="faint" style="font-size:.82rem">支援 .pdf .docx .txt</span></div>
+      </section>
+
+      <section class="panel glass">
+        <div class="panel-head"><span class="eyebrow">02 · 素材</span><h2 class="panel-title">字型與背景</h2></div>
+        <label class="field-label">字型檔</label>
+        <div class="picker"><button class="btn-glass">選擇檔案</button><select class="glass-field select-font"><option>霞鶩文楷</option><option>手寫體 A</option></select></div>
+        <div style="height:14px"></div>
+        <label class="field-label">背景圖片檔</label>
+        <div class="picker"><button class="btn-glass">選擇檔案</button><span class="faint" style="font-size:.82rem">無背景將自動生成橫線紙</span></div>
+      </section>
+
+      <section class="panel glass">
+        <div class="panel-head"><span class="eyebrow">03 · 畫布</span><h2 class="panel-title">版面尺寸</h2></div>
+        <div class="grid-2">
+          <label class="ifield"><span class="ifield-label">寬度</span><input class="glass-field" type="number" value="2481"></label>
+          <label class="ifield"><span class="ifield-label">高度</span><input class="glass-field" type="number" value="3507"></label>
+        </div>
+        <div class="toggles">
+          <label class="switch"><input type="checkbox" checked><span class="track"><span class="thumb"></span></span><span class="t">增加底線</span></label>
+          <label class="switch"><input type="checkbox"><span class="track"><span class="thumb"></span></span><span class="t">增大英文單字間距</span></label>
+        </div>
+      </section>
+
+      <section class="panel glass">
+        <div class="panel-head"><span class="eyebrow">04 · 排版</span><h2 class="panel-title">排版參數</h2></div>
+        <div class="grid-2">
+          <label class="ifield"><span class="ifield-label">字體大小</span><input class="glass-field" type="number" value="124"></label>
+          <label class="ifield"><span class="ifield-label">行距</span><input class="glass-field" type="number" value="200"></label>
+          <label class="ifield"><span class="ifield-label">上邊距</span><input class="glass-field" type="number" value="50"></label>
+          <label class="ifield"><span class="ifield-label">下邊距</span><input class="glass-field" type="number" value="50"></label>
+          <label class="ifield"><span class="ifield-label">左邊距</span><input class="glass-field" type="number" value="50"></label>
+          <label class="ifield"><span class="ifield-label">右邊距</span><input class="glass-field" type="number" value="50"></label>
+        </div>
+        <button class="expand-btn">更多內容 ⌄</button>
+      </section>
+
+      <section class="panel glass action-panel">
+        <div class="row sec"><button class="btn-glass">載入設定</button><button class="btn-glass">儲存設定</button><button class="btn-glass">重設設定</button></div>
+        <div class="row pri"><button class="btn-ink">預覽</button><button class="btn-ink">生成完整手寫圖片</button><button class="btn-ink">生成 PDF</button></div>
+        <a class="feedback-link">意見回饋 →</a>
+      </section>
+    </div>
+
+    <aside class="col-preview">
+      <section class="panel glass">
+        <div class="panel-head"><span class="eyebrow">預覽 · Preview</span></div>
+        <div class="pager"><button class="btn-glass" style="font-size:.85rem">← 上一頁</button><span class="pager-info">第 1 頁 / 共 3 頁</span><button class="btn-glass" style="font-size:.85rem">下一頁 →</button></div>
+        <div class="preview-frame">
+          <svg viewBox="0 0 420 560" width="420" xmlns="http://www.w3.org/2000/svg">
+            <rect width="420" height="560" fill="#ffffff"/>
+            <g stroke="#e9eaee" stroke-width="1">
+              <line x1="36" y1="70" x2="384" y2="70"/><line x1="36" y1="118" x2="384" y2="118"/><line x1="36" y1="166" x2="384" y2="166"/><line x1="36" y1="214" x2="384" y2="214"/><line x1="36" y1="262" x2="384" y2="262"/><line x1="36" y1="310" x2="384" y2="310"/><line x1="36" y1="358" x2="384" y2="358"/><line x1="36" y1="406" x2="384" y2="406"/><line x1="36" y1="454" x2="384" y2="454"/><line x1="36" y1="502" x2="384" y2="502"/>
+            </g>
+            <g fill="#2b2f36" font-family="'Inter','PingFang TC',sans-serif" font-size="25" letter-spacing="2">
+              <text x="40" y="62">面朝大海，春暖花開。</text>
+              <text x="40" y="110">從明天起，做一個幸福</text>
+              <text x="40" y="158">的人，餵馬、劈柴，周</text>
+              <text x="40" y="206">遊世界。從明天起，關</text>
+              <text x="40" y="254">心糧食和蔬菜。我有一</text>
+              <text x="40" y="302">所房子，面朝大海，春</text>
+              <text x="40" y="350">暖花開。</text>
+            </g>
+          </svg>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <footer>
+    <div class="muted">專案位址：<a href="#">GitHub</a></div>
+    <div class="freeprompt">本網站是免費網站，如果你是付費存取的請退款</div>
+  </footer>
+</main>
+
+<div class="tag">靜態預覽 · 點右上角 ◐ 切換 自動 / 淺色 / 深色</div>
+
+<script>
+var order=["auto","light","dark"],icons={auto:"◐",light:"☀",dark:"☾"},labels={auto:"主題：自動",light:"主題：淺色",dark:"主題：深色"};
+function cycle(){var r=document.documentElement,c=r.getAttribute("data-theme")||"auto",n=order[(order.indexOf(c)+1)%3];r.setAttribute("data-theme",n);var b=document.getElementById("tbtn");b.textContent=icons[n];b.title=labels[n];}
+function lang(el,l){el.parentNode.querySelectorAll("button").forEach(function(x){x.classList.remove("active")});el.classList.add("active");}
+</script>
+</body>
+</html>
