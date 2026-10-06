@@ -8,6 +8,35 @@
 
 > 想先看介面風格：用瀏覽器打開根目錄的 `redesign-preview.html`，右上角可切換 自動／淺色／深色。
 
+## 30 秒理解 nowrite
+
+這不是單純把文字畫到圖片上的 script。完整路徑是：
+
+```mermaid
+flowchart LR
+  A[Vue UI] --> B[FastAPI]
+  B --> C[SQLite task state]
+  B --> D[render queue]
+  D --> E[handwriting renderer]
+  E --> F[PNG / ZIP / PDF]
+  A <-->|WebSocket / polling| B
+  G[Electron] --> A
+  G --> H[PyInstaller backend sidecar]
+```
+
+| 想確認什麼 | 直接看 |
+|---|---|
+| 操作介面 | `redesign-preview.html`、`frontend/` |
+| 任務與渲染後端 | `backend/app.py` |
+| 桌面版如何帶後端 | `desktop/main.cjs`、`desktop/preload.cjs` |
+| macOS / Windows 打包 | [DESKTOP_BUILD](DESKTOP_BUILD.md) |
+| CI 建置 | `.github/workflows/build.yml` |
+| Backend tests | `.github/workflows/test_backend.yml` |
+
+核心渲染能力來自開源 handright / handwriting-web；這個 repo 自己完成的重點是**產品介面、繁中在地化、檔案匯入、任務流程、離線桌面封裝與跨平台建置**，不把上游開源程式當成自己的成果。
+
+
+
 ---
 
 ## ✨ 特色
